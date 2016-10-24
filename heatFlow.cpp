@@ -1,0 +1,151 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <sstream>
+
+// Definition Domain of mesh(m)
+const double domainX = 0.40;
+const double domainY = 0.60;
+
+// Defintion Delta X/Y (m)
+const double deltaX = 0.01;
+const double deltaY = 0.01;
+
+// Definition Delta T (sec)
+constexpr double deltaT = 1.0;
+
+// Definition Heat Source Cercle Range (m)
+const double r = 0.10;
+
+// Definition Mesh Size
+constexpr int sizeX() {
+  return (int)(domainX / deltaX);
+}
+constexpr int sizeY() {
+  return (int)(domainY / deltaY);
+}
+constexpr int centerX() {
+  return sizeX() / 2;
+}
+constexpr int centerY() {
+  return sizeY() / 2;
+}
+
+// Definition Square function
+constexpr double square(double x) {
+  return x * x;
+}
+
+// Definition Dirichlet Condition area(773K or 0)
+constexpr double dirichlet(int x, int y) {
+  return square((centerX() - x) * deltaX) + square((centerY() - y) * deltaY) <= r*r ? 773.0 : 0;
+};
+
+// Definition Thermal Diffusivity as kappa m^2/sec
+const double kappa = 12.4e-6;
+constexpr double lambdaX(double x) {
+  return x * kappa * deltaT / deltaX / deltaX;
+}
+constexpr double lambdaY(double y) {
+  return y * kappa * deltaT / deltaY / deltaY;
+}
+
+class Mesh {
+  private:
+    std::vector<std::vector<double>> meshTable;
+  
+  public:
+    Mesh();
+    Mesh(Mesh* m);
+    int iter;
+    static double eval(int x, int y);
+    static double eval(int x, int y, Mesh* m);
+    double get(int x, int y);
+    ~Mesh();
+};
+
+double Mesh::eval(int x, int y) {
+  double dirich = dirichlet(x, y);
+  return dirich ? dirich : 300.0;
+}
+
+double Mesh::eval(int x, int y, Mesh* m){
+  double dirich = dirichlet(x, y);
+  if(dirich) {
+    return dirich;
+  } else if(x == 0) {
+    return m->get(x+1,y);
+  } else if(x == sizeX() - 1) {
+    return m->get(x-1,y);
+  } else if(y == 0) {
+    return m->get(x,y+1);
+  } else if(y == sizeY() - 1) {
+    return m->get(x,y-1);
+  } else {
+    double ret = m->get(x,y) +
+          lambdaX(m->get(x-1,y) + m->get(x+1,y) - 2*m->get(x,y)) +
+          lambdaY(m->get(x,y-1) + m->get(x,y+1) - 2*m->get(x,y));
+    return ret;
+  }
+}
+
+Mesh::Mesh() {
+  iter = 0;
+  meshTable = std::vector<std::vector<double>>(sizeY(), std::vector<double>(sizeX(), 300.0));
+
+  std::stringstream filename;
+  filename << "./dat/" << iter << ".mesh.dat";
+
+  std::ofstream ofs(filename.str());
+
+  for (int i = 0; i < sizeY(); i++) {
+    for (int j = 0; j < sizeX(); j++) {
+      meshTable[i][j] = Mesh::eval(j,i);
+      ofs << j << " " << i << " " << std::to_string(meshTable[i][j]) << std::endl;
+    }
+    ofs << std::endl;
+  }
+}
+
+Mesh::Mesh(Mesh* m) {
+  iter = 1 + m->iter;
+
+  std::stringstream filename;
+  filename << "./dat/" << iter << ".mesh.dat";
+
+  std::ofstream ofs(filename.str());
+
+  meshTable = std::vector<std::vector<double>>(sizeY(), std::vector<double>(sizeX(), 300.0));
+  for (int i = 0; i < sizeY(); i++) {
+    for (int j = 0; j < sizeX(); j++) {
+      meshTable[i][j] = Mesh::eval(j,i, m);
+      ofs << j << " " << i << " " << std::to_string(meshTable[i][j]) << std::endl;
+    }
+    ofs << std::endl;
+  }
+}
+
+Mesh::~Mesh() {
+  /*
+  std::cout << std::to_string(get(50,49) )  << " " << std::to_string(get(49,49))  << " " << std::to_string(get(50, 49))  << " " << std::to_string(get(101, 99))  << " " << std::to_string(get(102, 99)) << std::endl;
+  std::cout << std::to_string(get(50,50)) << " " << std::to_string(get(49,50)) << " " << std::to_string(get(50, 50)) << " " << std::to_string(get(101, 100)) << " " << std::to_string(get(102, 100)) << std::endl;
+  std::cout << std::to_string(get(50,51)) << " " << std::to_string(get(49,51)) << " " << std::to_string(get(50, 51)) << " " << std::to_string(get(101, 101)) << " " << std::to_string(get(102, 101)) << std::endl;
+  std::cout << std::to_string(get(50,52)) << " " << std::to_string(get(49,52)) << " " << std::to_string(get(50, 52)) << " " << std::to_string(get(101, 102)) << " " << std::to_string(get(102, 102)) << std::endl;
+  std::cout << std::endl;
+  */
+}
+
+double Mesh::get(int x, int y) {
+  return meshTable[y][x];
+}
+
+int main(int argc, char const* argv[])
+{
+  Mesh* m = new Mesh();
+  for (int i = 0; i < (1000 / deltaT) - 1; i++) {
+    Mesh* _m = new Mesh(m);
+    delete m;
+    m = _m;
+  }
+  return 0;
+}

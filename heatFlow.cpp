@@ -126,13 +126,6 @@ Mesh::Mesh(Mesh* m) {
 }
 
 Mesh::~Mesh() {
-  /*
-  std::cout << std::to_string(get(50,49) )  << " " << std::to_string(get(49,49))  << " " << std::to_string(get(50, 49))  << " " << std::to_string(get(101, 99))  << " " << std::to_string(get(102, 99)) << std::endl;
-  std::cout << std::to_string(get(50,50)) << " " << std::to_string(get(49,50)) << " " << std::to_string(get(50, 50)) << " " << std::to_string(get(101, 100)) << " " << std::to_string(get(102, 100)) << std::endl;
-  std::cout << std::to_string(get(50,51)) << " " << std::to_string(get(49,51)) << " " << std::to_string(get(50, 51)) << " " << std::to_string(get(101, 101)) << " " << std::to_string(get(102, 101)) << std::endl;
-  std::cout << std::to_string(get(50,52)) << " " << std::to_string(get(49,52)) << " " << std::to_string(get(50, 52)) << " " << std::to_string(get(101, 102)) << " " << std::to_string(get(102, 102)) << std::endl;
-  std::cout << std::endl;
-  */
 }
 
 double Mesh::get(int x, int y) {

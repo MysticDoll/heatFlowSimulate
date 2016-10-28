@@ -12,7 +12,7 @@ const double deltaX = 0.01;
 const double deltaY = 0.01;
 
 // Definition Delta T (sec)
-constexpr double deltaT = 1.0;
+constexpr double deltaT = 1.0 / 30.0;
 
 // Definition Heat Source Cercle Range (m)
 const double r = 0.10;

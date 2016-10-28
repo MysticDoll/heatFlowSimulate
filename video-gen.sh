@@ -13,4 +13,4 @@ fi
 
 echo $ret
 
-ffmpeg -r $ret -i ./graph/%3d.png -c:v libx264 -pix_fmt yuv420p "out."$ret"x.mp4" 
+ffmpeg -r $ret -i ./graph/%5d.png -c:v libx264 -pix_fmt yuv420p "out."$ret"x.mp4" 

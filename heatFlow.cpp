@@ -97,6 +97,7 @@ Mesh::Mesh() {
     }
     ofs << std::endl;
   }
+  ofs.close();
 }
 
 Mesh::Mesh(Mesh* m) {
@@ -115,6 +116,7 @@ Mesh::Mesh(Mesh* m) {
     }
     ofs << std::endl;
   }
+  ofs.close();
 }
 
 Mesh::~Mesh() {

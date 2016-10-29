@@ -18,18 +18,10 @@ constexpr double deltaT = 1.0 / 30.0;
 constexpr double r = 0.10;
 
 // Definition Mesh Size
-constexpr int sizeX() {
-  return (int)(domainX / deltaX);
-}
-constexpr int sizeY() {
-  return (int)(domainY / deltaY);
-}
-constexpr int centerX() {
-  return sizeX() / 2;
-}
-constexpr int centerY() {
-  return sizeY() / 2;
-}
+constexpr int sizeX = (int)(domainX / deltaX);
+constexpr int sizeY = (int)(domainY / deltaY);
+constexpr int centerX = sizeX / 2;
+constexpr int centerY = sizeY / 2;
 
 // Definition Square function
 constexpr double square(double x) {
@@ -38,7 +30,7 @@ constexpr double square(double x) {
 
 // Definition Dirichlet Condition area(773K or 0)
 constexpr double dirichlet(int x, int y) {
-  return square((centerX() - x) * deltaX) + square((centerY() - y) * deltaY) <= r*r ? 773.0 : 0;
+  return square((centerX - x) * deltaX) + square((centerY - y) * deltaY) <= r*r ? 773.0 : 0;
 };
 
 // Definition Thermal Diffusivity as kappa m^2/sec
@@ -75,11 +67,11 @@ double Mesh::eval(int x, int y, Mesh* m){
     return dirich;
   } else if(x == 0) {
     return m->get(x+1,y);
-  } else if(x == sizeX() - 1) {
+  } else if(x == sizeX - 1) {
     return m->get(x-1,y);
   } else if(y == 0) {
     return m->get(x,y+1);
-  } else if(y == sizeY() - 1) {
+  } else if(y == sizeY - 1) {
     return m->get(x,y-1);
   } else {
     double ret = m->get(x,y) +
@@ -91,15 +83,15 @@ double Mesh::eval(int x, int y, Mesh* m){
 
 Mesh::Mesh() {
   iter = 0;
-  meshTable = std::vector<std::vector<double>>(sizeY(), std::vector<double>(sizeX(), 300.0));
+  meshTable = std::vector<std::vector<double>>(sizeY, std::vector<double>(sizeX, 300.0));
 
   std::stringstream filename;
   filename << "./dat/" << iter << ".mesh.dat";
 
   std::ofstream ofs(filename.str());
 
-  for (int i = 0; i < sizeY(); i++) {
-    for (int j = 0; j < sizeX(); j++) {
+  for (int i = 0; i < sizeY; i++) {
+    for (int j = 0; j < sizeX; j++) {
       meshTable[i][j] = Mesh::eval(j,i);
       ofs << j << " " << i << " " << std::to_string(meshTable[i][j]) << std::endl;
     }
@@ -115,9 +107,9 @@ Mesh::Mesh(Mesh* m) {
 
   std::ofstream ofs(filename.str());
 
-  meshTable = std::vector<std::vector<double>>(sizeY(), std::vector<double>(sizeX(), 300.0));
-  for (int i = 0; i < sizeY(); i++) {
-    for (int j = 0; j < sizeX(); j++) {
+  meshTable = std::vector<std::vector<double>>(sizeY, std::vector<double>(sizeX, 300.0));
+  for (int i = 0; i < sizeY; i++) {
+    for (int j = 0; j < sizeX; j++) {
       meshTable[i][j] = Mesh::eval(j,i, m);
       ofs << j << " " << i << " " << std::to_string(meshTable[i][j]) << std::endl;
     }

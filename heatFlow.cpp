@@ -4,18 +4,18 @@
 #include <sstream>
 
 // Definition Domain of mesh(m)
-const double domainX = 0.40;
-const double domainY = 0.60;
+constexpr double domainX = 0.40;
+constexpr double domainY = 0.60;
 
 // Defintion Delta X/Y (m)
-const double deltaX = 0.01;
-const double deltaY = 0.01;
+constexpr double deltaX = 0.01;
+constexpr double deltaY = 0.01;
 
 // Definition Delta T (sec)
 constexpr double deltaT = 1.0 / 30.0;
 
 // Definition Heat Source Cercle Range (m)
-const double r = 0.10;
+constexpr double r = 0.10;
 
 // Definition Mesh Size
 constexpr int sizeX() {
@@ -42,7 +42,7 @@ constexpr double dirichlet(int x, int y) {
 };
 
 // Definition Thermal Diffusivity as kappa m^2/sec
-const double kappa = 12.4e-6;
+constexpr double kappa = 12.4e-6;
 constexpr double lambdaX(double x) {
   return x * kappa * deltaT / deltaX / deltaX;
 }

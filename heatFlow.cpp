@@ -34,7 +34,7 @@ constexpr double dirichlet(int x, int y) {
 };
 
 // Definition Thermal Diffusivity as kappa m^2/sec
-constexpr double kappa = 12.4e-6;
+constexpr double kappa = 22.7e-6;
 constexpr double lambdaX(double x) {
   return x * kappa * deltaT / deltaX / deltaX;
 }

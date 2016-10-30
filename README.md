@@ -11,6 +11,7 @@ $ g++ --std=c++11 -o heatFlow.out heatFlow.cpp
 ```
 
 ## Generate Graph (after execute ./heatFlow.out)
+Require [GNUPlot](http://gnuplot.sourceforge.net/)
 ```sh
 $ ./graph-gen.sh
 ```
